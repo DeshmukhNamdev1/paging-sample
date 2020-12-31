@@ -1,9 +1,10 @@
 package com.an.paginglibrary.sample.datasource;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.paging.ItemKeyedDataSource;
-import android.arch.paging.PageKeyedDataSource;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
+import androidx.paging.ItemKeyedDataSource;
+import androidx.annotation.NonNull;
+import androidx.paging.PageKeyedDataSource;
+
 import android.util.Log;
 
 import com.an.paginglibrary.sample.AppController;
@@ -11,6 +12,8 @@ import com.an.paginglibrary.sample.BaseConstants;
 import com.an.paginglibrary.sample.model.Article;
 import com.an.paginglibrary.sample.model.Feed;
 import com.an.paginglibrary.sample.utils.NetworkState;
+
+import org.jetbrains.annotations.NotNull;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,7 +55,7 @@ public class FeedDataSource extends PageKeyedDataSource<Long, Article> implement
         appController.getRestApi().fetchFeed(QUERY, API_KEY, 1, params.requestedLoadSize)
                 .enqueue(new Callback<Feed>() {
                     @Override
-                    public void onResponse(Call<Feed> call, Response<Feed> response) {
+                    public void onResponse(@NotNull Call<Feed> call, @NotNull Response<Feed> response) {
                         if(response.isSuccessful()) {
                             callback.onResult(response.body().getArticles(), null, 2l);
                             initialLoading.postValue(NetworkState.LOADED);
@@ -65,7 +68,7 @@ public class FeedDataSource extends PageKeyedDataSource<Long, Article> implement
                     }
 
                     @Override
-                    public void onFailure(Call<Feed> call, Throwable t) {
+                    public void onFailure(@NotNull Call<Feed> call, @NotNull Throwable t) {
                         String errorMessage = t == null ? "unknown error" : t.getMessage();
                         networkState.postValue(new NetworkState(NetworkState.Status.FAILED, errorMessage));
                     }
